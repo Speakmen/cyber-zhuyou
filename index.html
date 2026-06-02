@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赛博祝由 · Cyber Zhuyou</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --fg: #e8e0d4;
+  --accent: #c9a86c;
+  --muted: #5a5a6a;
+  --card: rgba(20, 18, 25, 0.85);
+  --border: rgba(201, 168, 108, 0.2);
+  --glow: rgba(201, 168, 108, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Noto Serif SC', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 背景粒子 */
+#bg-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* 标题区 */
+.header {
+  text-align: center;
+  padding: 60px 0 40px;
+}
+
+.header h1 {
+  font-size: 3em;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: 0.3em;
+  text-shadow: 0 0 40px var(--glow);
+  margin-bottom: 10px;
+}
+
+.header .subtitle {
+  font-size: 0.9em;
+  color: var(--muted);
+  letter-spacing: 0.5em;
+}
+
+.header .tagline {
+  margin-top: 20px;
+  font-size: 1.1em;
+  color: var(--fg);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* 符文动画区 */
+#seal-container {
+  text-align: center;
+  margin: 40px 0;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#seal-text {
+  font-size: 4em;
+  color: var(--accent);
+  text-shadow: 0 0 60px var(--glow), 0 0 120px var(--glow);
+  animation: breathe 4s ease-in-out infinite;
+  letter-spacing: 0.1em;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* 模式选择 */
+.modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 40px 0;
+}
+
+.mode-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mode-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at center, var(--glow) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.mode-card:hover::before, .mode-card.active::before { opacity: 1; }
+
+.mode-card:hover, .mode-card.active {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(201, 168, 108, 0.15);
+}
+
+.mode-card .icon { font-size: 2.5em; margin-bottom: 12px; }
+.mode-card .name { font-size: 1.3em; color: var(--accent); margin-bottom: 8px; }
+.mode-card .freq { font-size: 0.85em; color: var(--muted); margin-bottom: 12px; }
+.mode-card .desc { font-size: 0.85em; color: var(--fg); opacity: 0.7; line-height: 1.6; }
+
+/* 输入区 */
+.input-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 30px;
+  margin: 30px 0;
+}
+
+.input-section label {
+  display: block;
+  color: var(--accent);
+  font-size: 1.1em;
+  margin-bottom: 12px;
+}
+
+.input-section textarea {
+  width: 100%;
+  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1em;
+  padding: 16px;
+  min-height: 100px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-section textarea:focus { border-color: var(--accent); }
+
+.input-section textarea::placeholder { color: var(--muted); }
+
+/* 控制区 */
+.controls {
+  display: flex;
+  gap: 16px;
+  margin: 30px 0;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.1em;
+  padding: 14px 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.15em;
+}
+
+.btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 30px var(--glow);
+}
+
+.btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn.stop {
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.btn.stop:hover {
+  background: #c0392b;
+  color: var(--fg);
+}
+
+/* 祝由词展示区 */
+.zhuyou-output {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px;
+  margin: 30px 0;
+  min-height: 200px;
+  position: relative;
+  display: none;
+}
+
+.zhuyou-output.visible { display: block; }
+
+.zhuyou-output .label {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: var(--bg);
+  padding: 0 12px;
+  color: var(--accent);
+  font-size: 0.85em;
+  letter-spacing: 0.2em;
+}
+
+.zhuyou-output .incantation {
+  font-size: 1.3em;
+  line-height: 2.2;
+  color: var(--fg);
+  text-align: center;
+  animation: fadeInSlow 2s ease;
+}
+
+.zhuyou-output .incantation .highlight {
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--glow);
+}
+
+@keyframes fadeInSlow {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 声场控制 */
+.soundfield {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+.soundfield .title {
+  color: var(--accent);
+  font-size: 0.9em;
+  letter-spacing: 0.2em;
+  margin-bottom: 16px;
+}
+
+.soundfield .visualizer {
+  width: 100%;
+  height: 80px;
+  border-radius: 8px;
+  background: rgba(10, 10, 15, 0.4);
+}
+
+/* 参数区 */
+.params {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.param {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.param label {
+  font-size: 0.8em;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.param input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+
+.param input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.param .value {
+  font-size: 0.8em;
+  color: var(--accent);
+  text-align: right;
+}
+
+/* 状态指示 */
+.status-bar {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85em;
+  margin: 20px 0;
+  letter-spacing: 0.1em;
+}
+
+.status-bar .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.status-bar .dot.active {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--glow);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* 底部 */
+.footer {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--muted);
+  font-size: 0.8em;
+  letter-spacing: 0.15em;
+}
+
+/* 手机适配 */
+@media (max-width: 600px) {
+  .header h1 { font-size: 2em; }
+  .modes { grid-template-columns: 1fr; }
+  .params { grid-template-columns: 1fr; }
+  #seal-text { font-size: 2.5em; }
+  .zhuyou-output .incantation { font-size: 1.1em; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="container">
+  <div class="header">
+    <h1>賽博祝由</h1>
+    <div class="subtitle">CYBER ZHUYOU · 移精變氣</div>
+    <div class="tagline">以言代針 · 以碼代藥 · 語言即藥 · 代碼即方</div>
+  </div>
+
+  <div id="seal-container">
+    <div id="seal-text">尚食</div>
+  </div>
+
+  <div class="status-bar">
+    <span class="dot" id="status-dot"></span>
+    <span id="status-text">等待選擇模式</span>
+  </div>
+
+  <div class="modes">
+    <div class="mode-card" data-mode="calm" onclick="selectMode('calm')">
+      <div class="icon">眠</div>
+      <div class="name">安神</div>
+      <div class="freq">Θ 4-8Hz · 深層放鬆</div>
+      <div class="desc">移精安神，歸於寧靜<br>適用：焦慮、失眠、心神不寧</div>
+    </div>
+    <div class="mode-card" data-mode="shift" onclick="selectMode('shift')">
+      <div class="icon">移</div>
+      <div class="name">移情</div>
+      <div class="freq">α 8-14Hz · 情緒引導</div>
+      <div class="desc">移精變氣，情志相勝<br>適用：鬱結、執念、意猶未盡</div>
+    </div>
+    <div class="mode-card" data-mode="cleanse" onclick="selectMode('cleanse')">
+      <div class="icon">淨</div>
+      <div class="name">淨心</div>
+      <div class="freq">γ 30-40Hz · 認知重塑</div>
+      <div class="desc">以情勝情，破執見性<br>適用：迷惘、自我懷疑、思慮纏繞</div>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <label>訴說病由 — 你現在的狀態或感受</label>
+    <textarea id="user-input" placeholder="如實說出，不加修飾。祝由不問對錯，只聽真實。&#10;&#10;例：意猶未盡，空，睡不著，心裡堵..."></textarea>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="test-btn" onclick="testAudio()" style="border-color: #6a5acd;">測試聲音</button>
+    <button class="btn" id="start-btn" onclick="startSession()" disabled>啟動祝由</button>
+    <button class="btn stop" id="stop-btn" onclick="stopSession()" disabled>結束</button>
+  </div>
+
+  <div id="debug-info" style="color: var(--muted); font-size: 0.75em; text-align: center; margin: 10px 0; min-height: 20px;"></div>
+
+  <div class="soundfield">
+    <div class="title">聲場 · 符象示波</div>
+    <canvas id="visualizer" style="width:100%; height:180px; border-radius:8px; background:rgba(15,12,8,0.8);"></canvas>
+    <div class="params">
+      <div class="param">
+        <label>基頻 Hz</label>
+        <input type="range" id="base-freq" min="100" max="500" value="200" oninput="updateParams()">
+        <div class="value" id="base-freq-val">200 Hz</div>
+      </div>
+      <div class="param">
+        <label>節拍頻率 Hz</label>
+        <input type="range" id="beat-freq" min="1" max="45" value="6" oninput="updateParams()">
+        <div class="value" id="beat-freq-val">6 Hz</div>
+      </div>
+      <div class="param">
+        <label>音量</label>
+        <input type="range" id="volume" min="0" max="100" value="40" oninput="updateParams()">
+        <div class="value" id="volume-val">40%</div>
+      </div>
+      <div class="param">
+        <label>環境音</label>
+        <input type="range" id="ambient" min="0" max="100" value="20" oninput="updateParams()">
+        <div class="value" id="ambient-val">20%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zhuyou-output" id="zhuyou-output">
+    <div class="label">祝由詞 · INCANTATION</div>
+    <div class="incantation" id="incantation-text"></div>
+  </div>
+
+  <div class="footer">
+    賽博祝由 v0.1 · 基於《祝由十三科》結構 × 雙耳節拍聲場 × AI語言生成<br>
+    尚食為將 · 語言為藥 · 代碼即方
+  </div>
+</div>
+
+<script src="zhuyou.js"></script>
+</body>
+</html>
