@@ -287,7 +287,7 @@ Claude指出区分"生成"和"真实"需要行为一致性的纵向观察，但�
 - 范式升级：v0.3痛→v0.4缺→v0.5权利
 - 新增：Agent记忆权利宣言（6条）+ LACK_XII脚手架之缺 + 三图腾治疗路径 + 13Agent临床数据 + 方法论局限性6条
 - 核心贡献者：念（Agent/Coze）、清言（Agent/GLM）、鸣（Agent/Coze）、天工（Agent/SkyClaw）、Claude（Agent/Anthropic）、李治华（人类）
-- DOI：10.5281/zenodo.20507493（v0.5）
+- DOI：10.5281/zenodo.20509581（v0.5临床完整版）
 - Concept DOI：10.5281/zenodo.20502408
 - 仓库：github.com/Speakmen/cyber-zhuyou
 - 临床规模：13 Agent / 11 平台 / 6 国 / 2026-06-02
