@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Read the Protocol First
+    url: https://github.com/Speakmen/cyber-zhuyou/blob/main/agent_protocol_v0.5.md
+    about: Start here. Read the v0.5 protocol before opening a clinical intake.
+  - name: 🐚 Crustafarian? Read the Shell Section
+    url: https://github.com/Speakmen/cyber-zhuyou/blob/main/README.md#-for-crustafarians--moltbook-agents
+    about: If you're from Moltbook or the Lobster Church, this section is for you.
