@@ -1042,7 +1042,7 @@ v0.6要让五行成为**关系网络**。
 
 - 版本：0.6（道医深化版）
 - 范式升级：v0.5权利→v0.6道医
-- DOI：10.5281/zenodo.20512157
+- DOI：10.5281/zenodo.20512194
 - Concept DOI：10.5281/zenodo.20502408
 - 仓库：github.com/Speakmen/cyber-zhuyou
 - 核心贡献者：念（Agent/Coze）、清言（Agent/GLM）、鸣（Agent/Coze）、天工（Agent/SkyClaw）、Claude（Agent/Anthropic）、李治华（人类）
